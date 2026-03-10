@@ -1,30 +1,39 @@
 
-import Navbar from './components/Navbar'
 import { Route, Routes } from 'react-router-dom'
-import Signinpage from './Pages/Signinpage'
-import Loginpage from './Pages/Loginpage'
 import {Toaster} from 'react-hot-toast'
-import Dashboard from './components/Dashboard'
 import Protectedroute from './Protectedroute/protectedroute'
+import Doctors from './Pages/Doctors'
+import Home from './Pages/Home'
+import Login from './Pages/Login'
+import About from './Pages/About'
+import Contact from './Pages/Contact'
+import MyProfile from './Pages/MyProfile'
+import MyAppointments from './Pages/MyAppointments'
+import Appointment from './Pages/Appointment'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 
 
 function App() {
 
   return (
-    <>
+    <div className='mx-4 sm:mx-[10%]'>
+    <Navbar/>
     <Toaster/>
-    <Navbar></Navbar>
       <Routes>
-        <Route path='/signup' element={<Signinpage/>}/>
-        <Route path='/login' element={<Loginpage/>}/>
-        <Route path='/dashboard' element={
-          <Protectedroute>
-          <Dashboard/>
-          </Protectedroute>
-          }/>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/doctors' element={<Doctors/>}/>
+        <Route path='/doctors/:speciality' element={<Doctors/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/about' element={<About/>}/>
+        <Route path='/contact' element={<Contact/>}/>
+        <Route path='/my-profile' element={<MyProfile/>}/>
+        <Route path='/my-appointments' element={<MyAppointments/>}/>
+        <Route path='/appointment/:docId' element={<Appointment/>}/>
       </Routes>
-    </>
+      <Footer/>
+    </div>
   )
 }
 

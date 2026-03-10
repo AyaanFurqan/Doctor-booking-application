@@ -1,70 +1,52 @@
-// src/components/Navbar.jsx
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-
+import React, { useState } from 'react'
+import { assets } from '../assets/assets_frontend/assets.js'
+import { NavLink, useNavigate } from 'react-router-dom'
 const Navbar = () => {
-  const { user, setUser } = useContext(AuthContext);
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    fetch("http://localhost:3000/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    }).then(() => {
-      setUser(null);
-      navigate("/login");
-    });
-  };
+    const navigate = useNavigate()
+    const [token, Settoken] = useState(true)
 
-  return (
-    <nav className="bg-indigo-600 text-white px-6 py-4 flex justify-between items-center">
-      <div className="font-bold text-xl">
-        <Link to="/">AI Clinic SaaS</Link>
-      </div>
+    return (
+        <div className='flex justify-between items-center text-sm py-4 mb-5 border-b border-b-gray-400'>
+            <img className='w-44 cursor-pointer' src={assets.logo} alt="" />
+            <ul className='hidden md:flex items-start gap-5 font-medium'>
+                <NavLink to={'/'}>
+                    <li className='py-1'>HOME</li>
+                    <hr className='border-none outline-none h-0.5 bg-blue-200 w-3/5 m-auto hidden ' />
+                </NavLink>
+                <NavLink to={'/doctors'}>
+                    <li className='py-1'>All DOCTORS</li>
+                    <hr className='border-none outline-none h-0.5 bg-blue-200 w-3/5 m-auto hidden ' />
+                </NavLink>
+                <NavLink to={'/about'}>
+                    <li className='py-1'>ABOUT</li>
+                    <hr className='border-none outline-none h-0.5 bg-blue-200 w-3/5 m-auto hidden ' />
+                </NavLink>
+                <NavLink to={'/contact'}>
+                    <li className='py-1'>CONTACT</li>
+                    <hr className='border-none outline-none h-0.5 bg-blue-200 w-3/5 m-auto hidden ' />
+                </NavLink>
+            </ul>
+            <div className='flex items-center gap-4'>
+                {
+                    token ?
 
-      <div className="space-x-4">
-        {user ? (
-          <>
-            <span>Hi, {user.name}</span>
+                        <div className='flex items-center gap-2 cursor-pointer group relative'>
+                            <img className='w-8 rounded-full' src={assets.profile_pic} alt="" />
+                            <img className='w-2.5' src={assets.dropdown_icon} alt="" />
+                            <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
+                                <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
+                                    <p onClick={()=>{navigate('/my-profile')}} className='hover:text-black cursor-pointer'>My Profile</p>
+                                    <p onClick={()=>{navigate('/my-appointments')}} className='hover:text-black cursor-pointer'>My Appointments</p>
+                                    <p onClick={()=>{Settoken(false)}} className='hover:text-black cursor-pointer'>Logout</p>
+                                </div>
+                            </div>
+                        </div> :
+                        <button onClick={() => { navigate('/login') }} className='bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block'>Create account</button>
+                }
+            </div>
+        </div>
+    )
+}
 
-            {/* Role-based links */}
-            {user.role === "admin" && (
-              <Link to="/dashboard" className="hover:underline">
-                Admin Dashboard
-              </Link>
-            )}
-            {(user.role === "doctor" || user.role === "receptionist") && (
-              <Link to="/appointments" className="hover:underline">
-                Appointments
-              </Link>
-            )}
-            {user.role === "patient" && (
-              <Link to="/dashboard" className="hover:underline">
-                My Profile
-              </Link>
-            )}
-
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="hover:underline">
-              Login
-            </Link>
-            <Link to="/signup" className="hover:underline">
-              Signup
-            </Link>
-          </>
-        )}
-      </div>
-    </nav>
-  );
-};
-
-export default Navbar;
+export default Navbar
