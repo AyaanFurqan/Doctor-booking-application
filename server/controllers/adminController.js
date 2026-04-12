@@ -15,19 +15,19 @@ export const adddoctor = async (req, res) => {
         }
 
         if (!validator.isEmail(email)) {
-          return  res.json({ success: false, message: "please enter a valid email" })
+            return res.json({ success: false, message: "please enter a valid email" })
         }
 
         const emailexist = await doctorModel.findOne({ email })
 
         if (emailexist) {
-          return  res.json({ success: false, message: 'Email already registered' })
+            return res.json({ success: false, message: 'Email already registered' })
         }
 
 
 
         if (!validator.isStrongPassword(password)) {
-          return  res.json({ success: false, message: "please enter a strong password" })
+            return res.json({ success: false, message: "please enter a strong password" })
         }
 
         const hashedpassword = await bcrypt.hash(password, 10)
@@ -53,10 +53,10 @@ export const adddoctor = async (req, res) => {
         const newDoctor = new doctorModel(doctordata)
         await newDoctor.save()
 
-       return res.json({ success: true, message: "doctor added successfully" })
+        return res.json({ success: true, message: "doctor added successfully" })
 
     } catch (error) {
-      return  res.json({ success: false, message: error })
+        return res.json({ success: false, message: error })
         console.log(error)
     }
 }
@@ -65,7 +65,7 @@ export const adminlogin = (req, res) => {
     const { email, password } = req.body
     try {
         if (!email || !password) {
-          return  res.json({ success: false, message: 'please provide login details' })
+            return res.json({ success: false, message: 'please provide login details' })
         }
         if (email == process.env.ADMIN_EMAIL && password == process.env.ADMIN_PASSWORD) {
             const token = jwt.sign(email + password, process.env.JWT_SECRET)
@@ -75,21 +75,34 @@ export const adminlogin = (req, res) => {
                 httpOnly: true
             })
 
-           return res.json({ success: true, token, message: 'Login success' })
+            return res.json({ success: true, token, message: 'Login success' })
         }
         else {
-          return  res.json({ success: false, message: 'invalid credentials' })
+            return res.json({ success: false, message: 'invalid credentials' })
         }
 
     } catch (error) {
-      return  res.json({ success: false, message: error })
+        return res.json({ success: false, message: error })
         console.log(error)
     }
+}
+
+export const alldoctors = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({}).select('-password')
+        return res.json({ success: true, doctors })
+    }
+    catch(error) {
+        return res.json({ success: false, message: error })
+        console.log(error)
+    }
+
+
 }
 
 export const adminlogout = (req, res) => {
     res.clearCookie('atoken', {
         httpOnly: true
     })
-  return  res.json({ success: true, message: 'Logout success' })
+    return res.json({ success: true, message: 'Logout success' })
 }

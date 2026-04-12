@@ -43,20 +43,19 @@ const Adddoctor = () => {
       console.log(data)
       if (data.success) {
         toast.success(data.message)
-        // setTimeout(()=>{
-        //   setName = ""
-        // setEmail = ""
-        // setPassword = ""
-        // setDocimg = " assets.upload_area"
-        // setExperience = "1 Year"
-        // setFees = ""
-        // setSpeciality = "General Physician"
-        // setEducation = ""
-        // setAddress1 = ""
-        // setAddress2 = ""
-        // setAboutdocboutdoc = ""
-        // },1000)
-        
+        setTimeout(() => {
+          setName('')
+          setEmail('')
+          setPassword('')
+          setDocimg(false)
+          setFees('')
+          setEducation('')
+          setAddress1('')
+          setAddress2('')
+          setAboutdoc('')
+        }, 2000);
+
+
       }
       else {
         toast.error(data.message)
@@ -96,7 +95,7 @@ const Adddoctor = () => {
             <div className='flex-1 flex flex-col gap-1'>
               <p>Doctor Password</p>
               <input onChange={(e) => { setPassword(e.target.value) }} value={password} className='border border-gray-200 rounded px-3 py-2' type={showpassword ? 'text' : 'password'} placeholder='Password' />
-              <button className='cursor-pointer bg-gray-100' onClick={()=>{setShowpassword((prev)=>!prev)}}>{showpassword ? 'Hide password' : 'Show password'}</button>
+              <button className='cursor-pointer bg-gray-' onClick={() => { setShowpassword((prev) => !prev) }}>{showpassword ? 'Hide password' : 'Show password'}</button>
             </div>
 
             <div className='flex-1 flex flex-col gap-1'>
