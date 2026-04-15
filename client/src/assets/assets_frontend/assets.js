@@ -36,9 +36,13 @@ import General_physician from './General_physician.svg'
 import Gynecologist from './Gynecologist.svg'
 import Neurologist from './Neurologist.svg'
 import Pediatricians from './Pediatricians.svg'
+import hide from './hide_15567150.png'
+import eye from './eye_9283704.png'
 
 
 export const assets = {
+    hide,
+    eye,
     appointment_img,
     header_img,
     group_profiles,

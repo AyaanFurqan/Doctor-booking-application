@@ -5,6 +5,8 @@ import connectDB from "./config/config.js"
 import connectcloudinary from "./config/cloudinary.js"
 import 'dotenv/config'
 import adminRouter from "./routes/adminroutes.js"
+import doctorRouter from "./routes/doctorRoutes.js"
+import userRouter from "./routes/userRoutes.js"
 
 // app config
 const app = express()
@@ -16,7 +18,7 @@ connectDB().then(() => {
         console.log(`Server is running on port ${port}`);
     });
 
- }).catch((err) => {
+}).catch((err) => {
     console.log("Database connection failed", err);
 });
 connectcloudinary();
@@ -25,12 +27,17 @@ connectcloudinary();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials:true
+    origin: {
+        'http://localhost:5174': true,
+        'http://localhost:5173': true
+    },
+    credentials: true
 }))
 
 // API Endpoints
 app.use('/api/admin', adminRouter)
+app.use('/api/doctor', doctorRouter)
+app.use('/api/user', userRouter)
 
 
 

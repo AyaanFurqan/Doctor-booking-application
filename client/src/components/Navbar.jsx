@@ -1,11 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets_frontend/assets.js'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext.jsx'
 const Navbar = () => {
 
     const navigate = useNavigate()
-    const [token, Settoken] = useState(true)
+    const { token, setToken, backendurl } = useContext(AppContext)
     const [showmenu, setShowmenu] = useState(false)
+    const userlogout = () => {
+        try {
+            const { data } = axios.get(backendurl + 'api/user/logout')
+            if (data.success) {
+                return toast.success(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+            console.log(error)
+
+        }
+
+    }
 
     return (
         <div className='flex justify-between items-center text-sm py-4 mb-5 border-b border-b-gray-400'>
@@ -39,7 +53,7 @@ const Navbar = () => {
                                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                                     <p onClick={() => { navigate('/my-profile') }} className='hover:text-black cursor-pointer'>My Profile</p>
                                     <p onClick={() => { navigate('/my-appointments') }} className='hover:text-black cursor-pointer'>My Appointments</p>
-                                    <p onClick={() => { Settoken(false) }} className='hover:text-black cursor-pointer'>Logout</p>
+                                    <p onClick={() => { userlogout() }} className='hover:text-black cursor-pointer'>Logout</p>
                                 </div>
                             </div>
                         </div> :
@@ -53,10 +67,10 @@ const Navbar = () => {
                         <img className='w-7' onClick={() => { setShowmenu(false) }} src={assets.cross_icon} alt="" />
                     </div>
                     <ul className='flex flex-col items-center gap-3 font-medium mt-5 px-5 text-lg'>
-                        <NavLink  onClick={()=>{setShowmenu(false)}} to={'/'}> <p className='px-4 py-2 rounded-full inline-block'>Home</p></NavLink>
-                        <NavLink  onClick={()=>setShowmenu(false)} to={'/doctors'}> <p className='px-4 py-2 rounded-full inline-block'>All doctors</p></NavLink>
-                        <NavLink  onClick={()=>{setShowmenu(false)}} to={'/about'}> <p className='px-4 py-2 rounded-full inline-block'>About</p></NavLink>
-                        <NavLink  onClick={()=>{setShowmenu(false)}} to={'/contact'}> <p className='px-4 py-2 rounded-full inline-block'>Contact</p></NavLink>
+                        <NavLink onClick={() => { setShowmenu(false) }} to={'/'}> <p className='px-4 py-2 rounded-full inline-block'>Home</p></NavLink>
+                        <NavLink onClick={() => setShowmenu(false)} to={'/doctors'}> <p className='px-4 py-2 rounded-full inline-block'>All doctors</p></NavLink>
+                        <NavLink onClick={() => { setShowmenu(false) }} to={'/about'}> <p className='px-4 py-2 rounded-full inline-block'>About</p></NavLink>
+                        <NavLink onClick={() => { setShowmenu(false) }} to={'/contact'}> <p className='px-4 py-2 rounded-full inline-block'>Contact</p></NavLink>
                     </ul>
 
                 </div>
