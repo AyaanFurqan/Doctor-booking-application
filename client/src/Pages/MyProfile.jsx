@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { assets } from '../assets/assets_frontend/assets'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 const MyProfile = () => {
   const [userdata, setUserdata] = useState({
@@ -16,6 +19,15 @@ const MyProfile = () => {
   })
 
   const [isEdit, setIsEdit] = useState(true)
+  const {token} = useContext(AppContext)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(!token){
+      navigate('/')
+    }
+  },[])
+
   return (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
       <div>

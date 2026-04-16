@@ -2,16 +2,20 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets_frontend/assets.js'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext.jsx'
+import toast from 'react-hot-toast'
+import axios from 'axios'
 const Navbar = () => {
 
     const navigate = useNavigate()
     const { token, setToken, backendurl } = useContext(AppContext)
     const [showmenu, setShowmenu] = useState(false)
-    const userlogout = () => {
+    const userlogout = async() => {
         try {
-            const { data } = axios.get(backendurl + 'api/user/logout')
+            const { data } = await axios.get(backendurl + 'api/user/logout', {withCredentials:true})
+            console.log(data)
             if (data.success) {
-                return toast.success(data.message)
+                toast.success(data.message)
+                setToken(false)
             }
         } catch (error) {
             toast.error(error.message)

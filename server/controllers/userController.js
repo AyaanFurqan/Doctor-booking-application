@@ -82,9 +82,52 @@ export const loginuser = async (req, res) => {
    }
 }
 
-export const userlogout = (req, res)=>{
-res.clearCookie('token',{
-   httpOnly:true
-})
-return res.json({success:true, message:'Logout success'})
+// API to getprofile
+export const getprofile = async (req, res) => {
+   const id = req.body
+   try {
+      const userdata = await userModel.findById(id).select('-password')
+      if (!userdata) {
+         return res.json({ success: false, message: 'User not found' })
+      }
+      res.json({ success: true, userdata })
+   }
+   catch (error) {
+      res.json(error.message)
+      console.log(error)
+   }
+
+
+}
+
+// API to update user profile
+export const updateprofile = async(req, res) => {
+   const id = req.body
+   const { name, address, dob, gender, phone } = req.body
+   const imageFile = req.file
+
+   try {
+      if (!name || !address || !dob || !gender || !phone) {
+         return res.json({ success: false, message: 'Missing details' })
+      }
+
+      await userModel.findByIdAndUpdate(id,{name, address:JSON.parse(address), dob, gender, phone })
+      
+      if(imageFile){
+         // Upload image file to cloudinary
+         
+      }
+
+   }
+   catch (error) {
+
+   }
+
+}
+
+export const userlogout = (req, res) => {
+   res.clearCookie('token', {
+      httpOnly: true
+   })
+   res.json({ success: true, message: 'Logout success' })
 }

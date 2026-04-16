@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import { useContext } from 'react'
 import axios from 'axios'
@@ -12,6 +12,12 @@ const loginpage = () => {
   const [name, setName] = useState('')
   const { token, setToken, backendurl } = useContext(AppContext)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (token) {
+      navigate('/')
+    }
+  }, [])
 
   const onSubmit = async () => {
     try {
@@ -35,7 +41,6 @@ const loginpage = () => {
           toast.success(data.message)
           console.log(data)
           setToken(true)
-          navigate('/')
         } else {
           toast.error(data.message)
           console.log(data)

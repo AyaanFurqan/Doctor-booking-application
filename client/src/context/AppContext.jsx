@@ -9,6 +9,24 @@ const AppContextProvider = (props) => {
     const [doctors, setDoctors] = useState([])
     const [token, setToken] = useState(false)
 
+    // User token authentication to check if its already login
+    const checkalreadylogin = async () => {
+        try {
+            const { data } = await axios.get(backendurl + 'api/user/userauth', { withCredentials: true })
+            if (data.success) {
+                setToken(true)
+            } else {
+                setToken(false)
+            }
+        } catch (error) {
+            setToken(false)
+            console.log(error)
+        }
+
+    }
+
+
+
     // Function to get all doctors
     const getalldoctors = async () => {
         try {
@@ -23,23 +41,9 @@ const AppContextProvider = (props) => {
 
     }
 
-    // User token authentication to check if its already login
-    const checkalreadylogin = async () => {
-        try {
-            const { data } = await axios.get(backendurl + 'api/user/userauth')
-            if (data.success) {
-                setToken(true)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
-
     useEffect(() => {
         checkalreadylogin()
     }, [])
-
 
     const currencysymbol = '$'
 
@@ -48,7 +52,7 @@ const AppContextProvider = (props) => {
         getalldoctors,
         currencysymbol,
         backendurl,
-        token, setToken
+        token, setToken,
     }
 
     return (

@@ -15,7 +15,7 @@ export const userauth = (req, res, next) => {
 
         const {id} = decoded
 
-        req.user = id.select('-password')
+        req.body = id
 
         next()
 
