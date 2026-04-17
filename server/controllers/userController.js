@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import bcrypt from 'bcrypt'
 import userModel from '../models/userModel.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 // API to register user
 export const registeruser = async (req, res) => {
@@ -70,7 +71,9 @@ export const loginuser = async (req, res) => {
 
       res.cookie('token', token, {
          maxAge: 7 * 24 * 60 * 60 * 1000,
-         httpOnly: true
+         httpOnly: true,
+         secure: true,
+         sameSite: 'None'
       })
 
       res.json({ success: true, message: 'Login success' })
@@ -84,7 +87,7 @@ export const loginuser = async (req, res) => {
 
 // API to getprofile
 export const getprofile = async (req, res) => {
-   const id = req.body
+   const id = req.userId
    try {
       const userdata = await userModel.findById(id).select('-password')
       if (!userdata) {
@@ -101,33 +104,40 @@ export const getprofile = async (req, res) => {
 }
 
 // API to update user profile
-export const updateprofile = async(req, res) => {
-   const id = req.body
+export const updateprofile = async (req, res) => {
+   const id = req.userId
    const { name, address, dob, gender, phone } = req.body
    const imageFile = req.file
 
    try {
-      if (!name || !address || !dob || !gender || !phone) {
+      if (!name || !dob || !gender || !phone) {
          return res.json({ success: false, message: 'Missing details' })
       }
 
-      await userModel.findByIdAndUpdate(id,{name, address:JSON.parse(address), dob, gender, phone })
-      
-      if(imageFile){
+      await userModel.findByIdAndUpdate(id, { name, address: JSON.parse(address), dob, gender, phone })
+
+      if (imageFile) {
          // Upload image file to cloudinary
-         
+         const imageupload = await cloudinary.uploader.upload(imageFile.path, { resource_type: 'image' })
+         const imageurl = imageupload.secure_url
+         await userModel.findByIdAndUpdate(id, { image: imageurl })
       }
+
+      return res.json({ success: true, message: 'Profile updated' })
 
    }
    catch (error) {
-
+      res.json(error.message)
+      console.log(error)
    }
 
 }
 
 export const userlogout = (req, res) => {
    res.clearCookie('token', {
-      httpOnly: true
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
    })
    res.json({ success: true, message: 'Logout success' })
 }

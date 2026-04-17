@@ -15,7 +15,7 @@ export const userauth = (req, res, next) => {
 
         const {id} = decoded
 
-        req.body = id
+        req.userId = id
 
         next()
 

@@ -27,10 +27,7 @@ connectcloudinary();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: {
-        'http://localhost:5174': true,
-        'http://localhost:5173': true
-    },
+    origin: true,
     credentials: true
 }))
 
@@ -40,7 +37,8 @@ app.use('/api/doctor', doctorRouter)
 app.use('/api/user', userRouter)
 
 
-
+// 'http://localhost:5174': true,
+        // 'http://localhost:5173': true
 
 
 

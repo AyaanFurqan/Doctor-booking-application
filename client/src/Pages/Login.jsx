@@ -17,7 +17,7 @@ const loginpage = () => {
     if (token) {
       navigate('/')
     }
-  }, [])
+  }, [token])
 
   const onSubmit = async () => {
     try {

@@ -1,7 +1,10 @@
 import React from 'react'
 import { assets } from '../assets/assets_frontend/assets'
+import { useNavigate } from 'react-router-dom'
+
 
 const Banner = () => {
+    const navigate = useNavigate()
     return (
         <div className='flex bg-primary rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-20 md:mx-10'>
 
@@ -11,7 +14,7 @@ const Banner = () => {
                     <p>Book Appointment</p>
                     <p className='mt-4'>With 100+ Trusted Doctors</p>
                 </div>
-                <button className='cursor-pointer bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create Account</button>
+                <button onClick={()=>{navigate('/login')}} className='cursor-pointer bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create Account</button>
             </div>
 
             {/*----rightside----  */}

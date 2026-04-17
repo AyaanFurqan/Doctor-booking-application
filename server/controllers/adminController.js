@@ -72,8 +72,10 @@ export const adminlogin = (req, res) => {
 
             res.cookie("atoken", token, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
-                httpOnly: true
-            })
+                httpOnly: true,
+                secure:true,
+                sameSite:'None'
+            })   
 
             return res.json({ success: true, token, message: 'Login success' })
         }
@@ -92,7 +94,7 @@ export const alldoctors = async (req, res) => {
         const doctors = await doctorModel.find({}).select('-password')
         return res.json({ success: true, doctors })
     }
-    catch(error) {
+    catch (error) {
         return res.json({ success: false, message: error })
         console.log(error)
     }
@@ -102,7 +104,9 @@ export const alldoctors = async (req, res) => {
 
 export const adminlogout = (req, res) => {
     res.clearCookie('atoken', {
-        httpOnly: true
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
     })
     return res.json({ success: true, message: 'Logout success' })
 }

@@ -9,9 +9,12 @@ const Navbar = () => {
     const navigate = useNavigate()
     const { token, setToken, backendurl } = useContext(AppContext)
     const [showmenu, setShowmenu] = useState(false)
-    const userlogout = async() => {
+    const [showdropdown, setShowdropdown] = useState(false)
+    const { userprofile, setUserprofile } = useContext(AppContext)
+    const { image } = userprofile
+    const userlogout = async () => {
         try {
-            const { data } = await axios.get(backendurl + 'api/user/logout', {withCredentials:true})
+            const { data } = await axios.get(backendurl + 'api/user/logout', { withCredentials: true })
             console.log(data)
             if (data.success) {
                 toast.success(data.message)
@@ -27,7 +30,7 @@ const Navbar = () => {
 
     return (
         <div className='flex justify-between items-center text-sm py-4 mb-5 border-b border-b-gray-400'>
-            <img className='w-44 cursor-pointer' src={assets.logo} alt="" />
+            <img onClick={() => { navigate('/') }} className='w-44 cursor-pointer rounded-full' src={assets.logo} alt="" />
             <ul className='hidden md:flex items-start gap-5 font-medium'>
                 <NavLink to={'/'}>
                     <li className='py-1'>HOME</li>
@@ -51,13 +54,14 @@ const Navbar = () => {
                     token ?
 
                         <div className='flex items-center gap-2 cursor-pointer group relative'>
-                            <img className='w-8 rounded-full' src={assets.profile_pic} alt="" />
-                            <img className='w-2.5' src={assets.dropdown_icon} alt="" />
-                            <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
+                            <img className='w-8 h-8 rounded-full object-cover' src={image} alt="" />
+                            <img onClick={() => { setShowdropdown(true) }} className='w-2.5' src={assets.dropdown_icon} alt="" />
+                            <div className={`absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 group-hover: block ${showdropdown ? 'block' : 'hidden'}  `}>
                                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
-                                    <p onClick={() => { navigate('/my-profile') }} className='hover:text-black cursor-pointer'>My Profile</p>
-                                    <p onClick={() => { navigate('/my-appointments') }} className='hover:text-black cursor-pointer'>My Appointments</p>
-                                    <p onClick={() => { userlogout() }} className='hover:text-black cursor-pointer'>Logout</p>
+                                    <p onClick={() => { navigate('/my-profile'), setShowdropdown(false) }} className='hover:text-black cursor-pointer'>My Profile</p>
+                                    <p onClick={() => { navigate('/my-appointments'), setShowdropdown(false) }} className='hover:text-black cursor-pointer'>My Appointments</p>
+                                    <p onClick={() => { userlogout(), setShowdropdown(false) }} className='hover:text-black cursor-pointer'>Logout</p>
+                                    <p onClick={() => { setShowdropdown(false) }} className='md-hidden cursor-pointer text-sm '>Close</p>
                                 </div>
                             </div>
                         </div> :
