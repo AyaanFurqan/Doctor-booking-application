@@ -56,6 +56,10 @@ const AppContextProvider = (props) => {
 
     }
 
+    useEffect(()=>{
+        getalldoctors()
+    },[])
+
     // useEffect hook to run checkalready function everytime webpage gets reloads which checks if token is valid or not
     useEffect(() => {
         checkalreadylogin()

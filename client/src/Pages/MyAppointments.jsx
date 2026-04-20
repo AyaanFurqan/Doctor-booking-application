@@ -1,32 +1,95 @@
 import React, { useContext, useEffect, useState } from 'react'
+import {useNavigate} from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
+import {toast} from 'react-hot-toast'
+import axios from 'axios'
 
 const MyAppointments = () => {
 
-  const { doctors } = useContext(AppContext)
+  const navigate = useNavigate()
+  const { backendurl, token, getalldoctors} = useContext(AppContext)
+  const [appointments, setAppointments, ] = useState([])
+  useEffect(()=>{
+    if(!token){
+     navigate('/')
+    }
+  })
+  const getusersappointments = async () => {
+    try {
+      const { data } = await axios.get(backendurl + 'api/user/my-appointments', {withCredentials:true})
+      if (data.success) {
+        console.log(data)
+        setAppointments(data.appointments.reverse())
+      }
+    }
+    catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+  }
 
-  return (
+  const cancelappointment = async(appointmentid)=>{
+    console.log(appointmentid)
+    try{
+      const {data} = await axios.post(backendurl + 'api/user/cancel-appointment',{appointmentid}, {withCredentials:true})
+      if (data.success){
+      toast.success(data.message)
+      getusersappointments()
+      getalldoctors()
+      console.log(data.message)
+       }
+    }
+    catch(error){
+      toast.error(error.message)
+      console.log(error)
+    }
+    
+  }
+
+  const onlinepayment = async(appointmentId)=>{
+    try {
+       const {data} = await axios.post(backendurl + 'api/user/online-payment',{appointmentId}, {withCredentials:true})
+       console.log(data)
+    if (data.success){
+      toast.success(data.message)
+      getusersappointments()
+    }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+   
+  }
+
+  useEffect(()=>{
+    getusersappointments()
+  },[token])
+
+  return appointments && token && (
     <div>
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>My appointments</p>
       <div>
-        {doctors.slice(0, 2).map((item, index) => (
+        {appointments.map((item, index) => (
           <div className='grid grid-cols-[1fr_2fr gap-4 sm:flex sm:gap-6 py-2 border-b]' key={index}>
             <div>
-              <img className='w-32 indigo-50' src={item.image} alt="" />
+              <img className='w-32 indigo-50' src={item.docData.image} alt="" />
             </div>
             <div className='flex-1 text-sm text-zinc-600'>
-              <p className='text-neutral-800 font-semibold'>{item.name}</p>
-              <p>{item.speaciality}</p>
+              <p className='text-neutral-800 font-semibold'>{item.docData.name}</p>
+              <p>{item.docData.speaciality}</p>
               <p className='text-zinc-700 font-medium mt-1'>Address:</p>
-              <p className='text-xs'>{item.address.line1}</p>
-              <p className='text-xs'>{item.address.line2}</p>
-              <p className='text-sm mt-1'><span className='text-sm text-neutral-700 font-medium'>Date & Time:</span>28, March, 2026 | 9:08</p>
+              <p className='text-xs'>{item.docData.address.line1}</p>
+              <p className='text-xs'>{item.docData.address.line2}</p>
+              <p className='text-sm mt-1'><span className='text-sm text-neutral-700 font-medium'>Date & Time:</span> {item.slotDate} | {item.slotTime}</p>
             </div>
             <div></div>
             <div className='flex flex-col gap-2 justify-end'>
-              <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all'>Pay Online</button>
-              <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-400 hover:text-white transition-all'>Cancel Appointment</button>
+              {!item.cancelled && item.payment && <button className='text-sm text-blue-400 text-center sm:min-w-48 py-2 border rounded'>Paid</button>}
+              {!item.cancelled && !item.payment && <button onClick={()=>{onlinepayment(item._id)}} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all'>Pay Online</button>}
+              {!item.cancelled && !item.payment && <button onClick={()=>{cancelappointment(item._id)}} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-400 hover:text-white transition-all'>Cancel Appointment</button>}
+              {item.cancelled && <button className='border border-gray-300 px-3 py-4 text-red-400'>This Appointment is Cancelled</button>}
             </div>
           </div>
         ))}

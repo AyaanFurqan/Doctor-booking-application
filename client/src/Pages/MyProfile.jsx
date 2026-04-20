@@ -48,7 +48,7 @@ const MyProfile = () => {
     }
   }, [token])
 
-  return userprofile && (
+  return userprofile && token && (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
       <div>
         {
