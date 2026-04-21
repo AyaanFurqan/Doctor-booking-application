@@ -1,5 +1,5 @@
 import express from 'express';
-import { adddoctor, adminlogin, adminlogout, alldoctors } from '../controllers/adminController.js';
+import { adddoctor, adminlogin, adminlogout, alldoctors, allappointments, adminappointmentcanel } from '../controllers/adminController.js';
 
 import upload from '../middleware/multer.js';
 import adminauth from '../middleware/adminauth.js';
@@ -13,6 +13,8 @@ adminRouter.get('/check-auth', adminauth, (req,res)=>{res.json({success:true, me
 adminRouter.get('/admin-logout', adminlogout)
 adminRouter.get('/all-doctors', adminauth, alldoctors)
 adminRouter.post('/change-availiblity', adminauth, changeavailibilty)
+adminRouter.get('/all-appointments', adminauth, allappointments)
+adminRouter.post('/cancel-appointment', adminauth, adminappointmentcanel)
 
 export default adminRouter;
 

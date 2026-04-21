@@ -1,6 +1,7 @@
 import validator from 'validator'
 import { v2 as cloudinary } from 'cloudinary'
 import doctorModel from '../models/doctorModel.js'
+import appointmentModel from '../models/appointmentModel.js'
 import bcrypt from 'bcrypt'
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
@@ -109,4 +110,43 @@ export const adminlogout = (req, res) => {
         sameSite: 'None'
     })
     return res.json({ success: true, message: 'Logout success' })
+}
+
+export const allappointments = async(req,res)=>{
+    try {
+        const appointments = await appointmentModel.find({}) 
+        res.json({success:true, appointments})
+    } catch (error) {
+        res.json({success:false, message:error.message})
+        console.log(error)
+    }
+    
+}
+
+export const adminappointmentcanel = async(req, res)=>{
+   try{
+
+    const {appointmentid} = req.body
+
+    const appointmentdata = await appointmentModel.findById(appointmentid)
+
+     await appointmentModel.findByIdAndUpdate(appointmentid,{cancelled:true})
+     
+     //   releasing doctors slot
+     const {docId, slotDate, slotTime} = appointmentdata
+
+     const doctorData = await doctorModel.findById(docId)
+
+     let slots_booked = doctorData.slots_booked
+
+     slots_booked[slotDate] = slots_booked[slotDate].filter(e=> e !== slotTime)
+
+     await doctorModel.findByIdAndUpdate(docId, {slots_booked})
+
+     return res.json({success:true, message:'Appointment cancelled'})
+   }
+   catch(error){
+    console.log(error)
+    res.json({success:false, message:error.message})
+   }
 }

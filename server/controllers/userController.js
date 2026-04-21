@@ -255,5 +255,5 @@ export const onlinepayement = async(req,res)=>{
       return res.json({success:false, message:'User is not Authorized'})
    }
    await appointmentModel.findByIdAndUpdate(appointmentId,{payment:true})
-   return res.json({success:true, message:`Your payement of ${appointmentdata.amount} is successful`})
+   return res.json({success:true, message:`Your payement of $ ${appointmentdata.amount} is successful`})
 }

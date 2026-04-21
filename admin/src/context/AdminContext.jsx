@@ -11,6 +11,7 @@ const AdminContextProvider = (props) => {
     const [atoken, setAtoken] = useState(false)
     const backendurl = import.meta.env.VITE_BACKENDURL
     const [doctors, setDoctors] = useState([])
+    const [appointments, setAppointments] = useState([])
 
 
     // to check admin is login
@@ -48,16 +49,36 @@ const AdminContextProvider = (props) => {
 
     }
 
+    // to get all appointments
+    const allappointments = async()=>{
+    const {data} = await axios.get(backendurl + 'api/admin/all-appointments', {withCredentials:true})
+    try {
+      if(data.success){
+      setAppointments(data.appointments)
+      console.log(data.appointments)
+    }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+//   to run allappointments function everytime page reload
+  useEffect(()=>{
+    allappointments()
+  },[atoken])
+
     // to run checkauth everytime page reloads
     useEffect(() => {
         checkauth()
-    }, [])
+    }, [atoken])
 
     // values we can access from whole application
     const value = {
         atoken, setAtoken,
         backendurl, getalldoctors,
-        doctors, changeavailiblity
+        doctors, changeavailiblity,
+        allappointments, appointments,
+        setAppointments,
 
     }
 
