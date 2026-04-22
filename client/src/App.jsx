@@ -1,7 +1,6 @@
 
 import { Route, Routes } from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
-import Protectedroute from './Protectedroute/protectedroute'
 import Doctors from './Pages/Doctors'
 import Home from './Pages/Home'
 import Login from './Pages/Login'
