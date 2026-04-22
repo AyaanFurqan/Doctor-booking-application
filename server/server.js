@@ -27,7 +27,10 @@ connectcloudinary();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: true,
+    origin: {
+        'https://doctor-booking-application-hmot.vercel.app' : true,
+        'https://doctor-booking-application-5ksb.vercel.app' : true,
+    },
     credentials: true
 }))
 
@@ -37,8 +40,7 @@ app.use('/api/doctor', doctorRouter)
 app.use('/api/user', userRouter)
 
 
-// 'http://localhost:5174': true,
-        // 'http://localhost:5173': true
+
 
 
 
