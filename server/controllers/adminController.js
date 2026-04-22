@@ -2,6 +2,7 @@ import validator from 'validator'
 import { v2 as cloudinary } from 'cloudinary'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
+import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
@@ -74,9 +75,9 @@ export const adminlogin = (req, res) => {
             res.cookie("atoken", token, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
-                secure:true,
-                sameSite:'None'
-            })   
+                secure: true,
+                sameSite: 'None'
+            })
 
             return res.json({ success: true, token, message: 'Login success' })
         }
@@ -112,41 +113,62 @@ export const adminlogout = (req, res) => {
     return res.json({ success: true, message: 'Logout success' })
 }
 
-export const allappointments = async(req,res)=>{
+export const allappointments = async (req, res) => {
     try {
-        const appointments = await appointmentModel.find({}) 
-        res.json({success:true, appointments})
+        const appointments = await appointmentModel.find({})
+        res.json({ success: true, appointments })
     } catch (error) {
-        res.json({success:false, message:error.message})
+        res.json({ success: false, message: error.message })
         console.log(error)
     }
-    
+
 }
 
-export const adminappointmentcanel = async(req, res)=>{
-   try{
+export const adminappointmentcanel = async (req, res) => {
+    try {
 
-    const {appointmentid} = req.body
+        const { appointmentid } = req.body
 
-    const appointmentdata = await appointmentModel.findById(appointmentid)
+        const appointmentdata = await appointmentModel.findById(appointmentid)
 
-     await appointmentModel.findByIdAndUpdate(appointmentid,{cancelled:true})
-     
-     //   releasing doctors slot
-     const {docId, slotDate, slotTime} = appointmentdata
+        await appointmentModel.findByIdAndUpdate(appointmentid, { cancelled: true })
 
-     const doctorData = await doctorModel.findById(docId)
+        //   releasing doctors slot
+        const { docId, slotDate, slotTime } = appointmentdata
 
-     let slots_booked = doctorData.slots_booked
+        const doctorData = await doctorModel.findById(docId)
 
-     slots_booked[slotDate] = slots_booked[slotDate].filter(e=> e !== slotTime)
+        let slots_booked = doctorData.slots_booked
 
-     await doctorModel.findByIdAndUpdate(docId, {slots_booked})
+        slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
 
-     return res.json({success:true, message:'Appointment cancelled'})
-   }
-   catch(error){
-    console.log(error)
-    res.json({success:false, message:error.message})
-   }
+        await doctorModel.findByIdAndUpdate(docId, { slots_booked })
+
+        return res.json({ success: true, message: 'Appointment cancelled' })
+    }
+    catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// Admin dashboard details
+export const admindashboard = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({})
+        const appointments = await appointmentModel.find({})
+        const users = await userModel.find({})
+        const dashData = {
+            doctors: doctors.length,
+            appointments:appointments.length,
+            users: users.length,
+            latestappointments: appointments.slice(0,7).reverse()
+        }
+        res.json({success:true, dashData})
+    }
+    catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+
 }

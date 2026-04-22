@@ -6,23 +6,9 @@ import { assets } from '../../assets/assets_admin/assets'
 import { toast } from 'react-toastify'
 
 const AllAppointments = () => {
-  const { backendurl, atoken, appointments,allappointments } = useContext(AdminContext)
+  const { backendurl, atoken, appointments,allappointments, cancelappointment } = useContext(AdminContext)
   const { agecalculate, currency } = useContext(AppContext)
 
-
-  const cancelappointment = async (appointmentid) => {
-    try {
-      const { data } = await axios.post(backendurl + 'api/admin/cancel-appointment', { appointmentid }, { withCredentials: true })
-      if (data.success) {
-        toast.success(data.message)
-        allappointments()
-      }
-    } catch (error) {
-      toast.error(error.message)
-      console.log(error)
-    }
-
-  }
   
   useEffect(() => {
     allappointments()
