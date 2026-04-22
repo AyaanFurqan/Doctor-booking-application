@@ -76,7 +76,7 @@ export const adminlogin = (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: 'None'
+                sameSite: 'none'
             })
 
             return res.json({ success: true, token, message: 'Login success' })
@@ -108,7 +108,7 @@ export const adminlogout = (req, res) => {
     res.clearCookie('atoken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'None'
+        sameSite: 'none'
     })
     return res.json({ success: true, message: 'Logout success' })
 }
